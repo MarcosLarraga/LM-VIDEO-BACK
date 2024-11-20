@@ -59,6 +59,20 @@ namespace CineAPI.Controllers
             return NoContent();
         }
 
+        [HttpGet("pelicula/{peliculaId}")]
+        public ActionResult<IEnumerable<Funcion>> GetFuncionesPorPelicula(int peliculaId)
+        {
+            var funcionesPorPelicula = funciones.Where(f => f.PeliculaId == peliculaId).ToList();
+
+            if (!funcionesPorPelicula.Any())
+            {
+                return NotFound($"No se encontraron funciones para la película con ID {peliculaId}.");
+            }
+
+            return Ok(funcionesPorPelicula);
+        }
+
+
         [HttpDelete("{id}")]
         public IActionResult DeleteFuncion(int id)
         {
