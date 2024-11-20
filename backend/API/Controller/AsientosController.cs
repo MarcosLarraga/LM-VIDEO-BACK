@@ -18,9 +18,17 @@ namespace CineAPI.Controllers
         // Método para inicializar los 60 asientos
         private static void InicializarAsientos()
         {
-            for (int i = 1; i <= 60; i++)
+            int numeroDeFunciones = 18; // Total de funciones
+            int numeroAsientosPorFuncion = 60; // Total de asientos por función
+            decimal precioBase = 50.00m; // Precio base de los asientos
+
+            for (int funcionId = 1; funcionId <= numeroDeFunciones; funcionId++)
             {
-                asientos.Add(new Asiento(i, i, true, 50.00m, 1)); // Ejemplo: FuncionId = 1
+                for (int i = 1; i <= numeroAsientosPorFuncion; i++)
+                {
+                    // Creamos un asiento único para cada función
+                    asientos.Add(new Asiento(asientos.Count + 1, i, true, precioBase, funcionId));
+                }
             }
         }
 

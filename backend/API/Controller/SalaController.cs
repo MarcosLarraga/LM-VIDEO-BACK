@@ -43,7 +43,6 @@ namespace CineAPI.Controllers
                 return NotFound();
             }
             sala.Nombre = updatedSala.Nombre;
-            sala.Capacidad = updatedSala.Capacidad;
             return NoContent();
         }
 
@@ -62,9 +61,9 @@ namespace CineAPI.Controllers
         // Método para inicializar datos de prueba
         public static void InicializarDatos()
         {
-            salas.Add(new Sala(1, "Sala A", 60)); 
-            salas.Add(new Sala(2, "Sala B", 60)); 
-            salas.Add(new Sala(3, "Sala C", 60)); 
+            salas.Add(new Sala(1, "Sala A")); 
+            salas.Add(new Sala(2, "Sala B")); 
+            salas.Add(new Sala(3, "Sala C")); 
         }
 
     }
