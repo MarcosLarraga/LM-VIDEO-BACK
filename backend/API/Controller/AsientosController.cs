@@ -19,7 +19,7 @@ namespace CineAPI.Controllers
         private static void InicializarAsientos()
         {
             int numeroDeFunciones = 18; // Total de funciones
-            int numeroAsientosPorFuncion = 60; // Total de asientos por función
+            int numeroAsientosPorFuncion = 64; // Total de asientos por función
             decimal precioBase = 50.00m; // Precio base de los asientos
 
             for (int funcionId = 1; funcionId <= numeroDeFunciones; funcionId++)
@@ -40,7 +40,7 @@ namespace CineAPI.Controllers
                 .Select(a => new
                 {
                     a.Numero,
-                    Disponible = a.Disponible ? "Disponible" : "Ocupado",
+                    a.Disponible, // Mantén el booleano original
                     a.Precio
                 })
                 .ToList();
@@ -52,6 +52,7 @@ namespace CineAPI.Controllers
 
             return Ok(asientosFuncion);
         }
+
 
 
 

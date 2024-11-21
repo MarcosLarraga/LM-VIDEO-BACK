@@ -10,6 +10,12 @@ namespace CineAPI.Controllers
     {
         private static List<Sala> salas = new List<Sala>();
 
+        // Constructor estático para inicializar los datos
+        static SalaController()
+        {
+            InicializarDatos();
+        }
+
         [HttpGet]
         public ActionResult<IEnumerable<Sala>> GetSalas()
         {
@@ -58,13 +64,11 @@ namespace CineAPI.Controllers
             return NoContent();
         }
 
-        // Método para inicializar datos de prueba
-        public static void InicializarDatos()
+        private static void InicializarDatos()
         {
-            salas.Add(new Sala(1, "Sala A")); 
-            salas.Add(new Sala(2, "Sala B")); 
-            salas.Add(new Sala(3, "Sala C")); 
+            salas.Add(new Sala(1, "Sala A"));
+            salas.Add(new Sala(2, "Sala B"));
+            salas.Add(new Sala(3, "Sala C"));
         }
-
     }
 }
