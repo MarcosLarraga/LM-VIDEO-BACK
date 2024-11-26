@@ -2,60 +2,64 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 
+
 namespace CineAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PagoController : ControllerBase
+    public class PagosController : ControllerBase
     {
-        private static List<Pago> pagos = new List<Pago>();
+        // Lista estática para almacenar pagos en memoria
+        public static List<Pago> pagos = new List<Pago>();
 
-        // POST: Crear un nuevo pago
+        // POST: api/pagos
         [HttpPost]
-        public ActionResult<Pago> CreatePago([FromBody] Pago nuevoPago)
+        public IActionResult RegistrarPago([FromBody] Pago nuevoPago)
         {
-            nuevoPago.Id = pagos.Any() ? pagos.Max(p => p.Id) + 1 : 1; // Generar un nuevo ID
-            nuevoPago.Fecha = DateTime.Now; // Asignar la fecha actual
+            if (nuevoPago == null || nuevoPago.AsientosSeleccionados == null || !nuevoPago.AsientosSeleccionados.Any())
+            {
+                return BadRequest("El pago debe contener datos válidos y al menos un asiento seleccionado.");
+            }
+
+            // Asignar un ID único al pago
+            nuevoPago.Id = pagos.Any() ? pagos.Max(p => p.Id) + 1 : 1;
+
+            // Agregar el nuevo pago a la lista
             pagos.Add(nuevoPago);
-            return CreatedAtAction(nameof(GetPago), new { id = nuevoPago.Id }, nuevoPago);
+
+            // Retornar el pago registrado
+            return CreatedAtAction(nameof(ObtenerPago), new { id = nuevoPago.Id }, nuevoPago);
         }
 
-        // GET: Obtener detalles de un pago por ID
+        // GET: api/pagos/{id}
         [HttpGet("{id}")]
-        public ActionResult<Pago> GetPago(int id)
+        public IActionResult ObtenerPago(int id)
         {
+            // Buscar el pago por ID
             var pago = pagos.FirstOrDefault(p => p.Id == id);
             if (pago == null)
             {
-                return NotFound($"No se encontró el pago con ID {id}");
+                return NotFound($"No se encontró el pago con ID {id}.");
             }
-            return Ok(pago);
-        }
 
-        // GET: Obtener todos los pagos
-        [HttpGet]
-        public ActionResult<IEnumerable<Pago>> GetPagos()
-        {
-            return Ok(pagos);
-        }
-
-        // PUT: Actualizar el estado de un pago
-        [HttpPut("{id}")]
-        public IActionResult UpdatePago(int id, [FromBody] Pago updatedPago)
-        {
-            var pago = pagos.FirstOrDefault(p => p.Id == id);
-            if (pago == null)
+            // Retornar los detalles del pago
+            return Ok(new
             {
-                return NotFound($"No se encontró el pago con ID {id}");
-            }
-
-            // Actualizar los datos del pago
-            pago.NombreCliente = updatedPago.NombreCliente;
-            pago.CorreoCliente = updatedPago.CorreoCliente;
-            pago.Metodo = updatedPago.Metodo;
-            pago.TransaccionExitosa = updatedPago.TransaccionExitosa;
-
-            return NoContent();
+                pago.Id,
+                pago.FuncionId,
+                pago.PeliculaId,
+                AsientosSeleccionados = pago.AsientosSeleccionados,
+                Cliente = new
+                {
+                    pago.Nombre,
+                    pago.Apellido,
+                    pago.Direccion,
+                    pago.CodigoPostal,
+                    pago.Ciudad,
+                    pago.CorreoElectronico,
+                    pago.Telefono
+                }
+            });
         }
     }
 }

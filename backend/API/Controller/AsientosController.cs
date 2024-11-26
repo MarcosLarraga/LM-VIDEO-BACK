@@ -20,7 +20,7 @@ namespace CineAPI.Controllers
         {
             int numeroDeFunciones = 18; // Total de funciones
             int numeroAsientosPorFuncion = 64; // Total de asientos por función
-            decimal precioBase = 50.00m; // Precio base de los asientos
+            decimal precioBase = 6.00m; // Precio base de los asientos
 
             for (int funcionId = 1; funcionId <= numeroDeFunciones; funcionId++)
             {
@@ -41,7 +41,7 @@ namespace CineAPI.Controllers
                 {
                     a.Numero,
                     a.Disponible, // Mantén el booleano original
-                    a.Precio
+                    Precio = $"{a.Precio} €" // Formatear precio con símbolo de euros
                 })
                 .ToList();
 
@@ -52,6 +52,7 @@ namespace CineAPI.Controllers
 
             return Ok(asientosFuncion);
         }
+
 
 
 
