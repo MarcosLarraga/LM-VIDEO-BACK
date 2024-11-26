@@ -10,61 +10,52 @@ namespace CineAPI.Controllers
     {
         private static List<Pago> pagos = new List<Pago>();
 
-        [HttpGet]
-        public ActionResult<IEnumerable<Pago>> GetPagos()
+        // POST: Crear un nuevo pago
+        [HttpPost]
+        public ActionResult<Pago> CreatePago([FromBody] Pago nuevoPago)
         {
-            return Ok(pagos);
+            nuevoPago.Id = pagos.Any() ? pagos.Max(p => p.Id) + 1 : 1; // Generar un nuevo ID
+            nuevoPago.Fecha = DateTime.Now; // Asignar la fecha actual
+            pagos.Add(nuevoPago);
+            return CreatedAtAction(nameof(GetPago), new { id = nuevoPago.Id }, nuevoPago);
         }
 
+        // GET: Obtener detalles de un pago por ID
         [HttpGet("{id}")]
         public ActionResult<Pago> GetPago(int id)
         {
             var pago = pagos.FirstOrDefault(p => p.Id == id);
             if (pago == null)
             {
-                return NotFound();
+                return NotFound($"No se encontró el pago con ID {id}");
             }
             return Ok(pago);
         }
 
-        [HttpPost]
-        public ActionResult<Pago> CreatePago(Pago pago)
+        // GET: Obtener todos los pagos
+        [HttpGet]
+        public ActionResult<IEnumerable<Pago>> GetPagos()
         {
-            pagos.Add(pago);
-            return CreatedAtAction(nameof(GetPago), new { id = pago.Id }, pago);
+            return Ok(pagos);
         }
 
+        // PUT: Actualizar el estado de un pago
         [HttpPut("{id}")]
-        public IActionResult UpdatePago(int id, Pago updatedPago)
+        public IActionResult UpdatePago(int id, [FromBody] Pago updatedPago)
         {
             var pago = pagos.FirstOrDefault(p => p.Id == id);
             if (pago == null)
             {
-                return NotFound();
+                return NotFound($"No se encontró el pago con ID {id}");
             }
-            pago.Monto = updatedPago.Monto;
-            pago.Fecha = updatedPago.Fecha;
+
+            // Actualizar los datos del pago
+            pago.NombreCliente = updatedPago.NombreCliente;
+            pago.CorreoCliente = updatedPago.CorreoCliente;
             pago.Metodo = updatedPago.Metodo;
             pago.TransaccionExitosa = updatedPago.TransaccionExitosa;
-            return NoContent();
-        }
 
-        [HttpDelete("{id}")]
-        public IActionResult DeletePago(int id)
-        {
-            var pago = pagos.FirstOrDefault(p => p.Id == id);
-            if (pago == null)
-            {
-                return NotFound();
-            }
-            pagos.Remove(pago);
             return NoContent();
-        }
-
-        public static void InicializarDatos()
-        {
-            pagos.Add(new Pago(1, 12.50m, DateTime.Now, "Tarjeta de Crédito", true));
-            pagos.Add(new Pago(2, 15.00m, DateTime.Now, "Tarjeta de Débito", true));
         }
     }
 }
