@@ -3,15 +3,15 @@ public class Funcion
     public int Id { get; set; }
     public int PeliculaId { get; set; }
     public int SalaId { get; set; }
-    public DateTime Horario { get; set; }
+    public DateOnly Fecha { get; set; } // Fecha separada
+    public TimeOnly Hora { get; set; } // Hora separada
 
-    // Constructor sin asientos
-    public Funcion(int id, int peliculaId, int salaId, DateTime horario)
+    public Funcion(int id, int peliculaId, int salaId, DateOnly fecha, TimeOnly hora)
     {
         Id = id;
         PeliculaId = peliculaId;
         SalaId = salaId;
-        Horario = horario;
+        Fecha = fecha;
+        Hora = hora;
     }
-
 }

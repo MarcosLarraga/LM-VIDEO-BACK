@@ -35,6 +35,39 @@ namespace CineAPI.Controllers
             return Ok(funcion);
         }
 
+        [HttpGet("pelicula/{peliculaId}")]
+        public ActionResult<IEnumerable<Funcion>> GetFuncionesPorPelicula(int peliculaId)
+        {
+            var funcionesPorPelicula = funciones.Where(f => f.PeliculaId == peliculaId).ToList();
+
+            if (!funcionesPorPelicula.Any())
+            {
+                return NotFound($"No se encontraron funciones para la película con ID {peliculaId}.");
+            }
+
+            return Ok(funcionesPorPelicula);
+        }
+
+        [HttpGet("pelicula/{peliculaId}/fecha/{fecha}")]
+        public ActionResult<IEnumerable<Funcion>> GetFuncionesPorPeliculaYFecha(int peliculaId, string fecha)
+        {
+            if (!DateOnly.TryParse(fecha, out DateOnly fechaParsed))
+            {
+                return BadRequest("El formato de la fecha es incorrecto.");
+            }
+
+            var funcionesPorFecha = funciones
+                .Where(f => f.PeliculaId == peliculaId && f.Fecha == fechaParsed)
+                .ToList();
+
+            if (!funcionesPorFecha.Any())
+            {
+                return NotFound($"No se encontraron funciones para la película con ID {peliculaId} en la fecha {fechaParsed.ToShortDateString()}.");
+            }
+
+            return Ok(funcionesPorFecha);
+        }
+
         [HttpPost]
         public ActionResult<Funcion> CreateFuncion(Funcion funcion)
         {
@@ -54,24 +87,11 @@ namespace CineAPI.Controllers
 
             funcion.PeliculaId = updatedFuncion.PeliculaId;
             funcion.SalaId = updatedFuncion.SalaId;
-            funcion.Horario = updatedFuncion.Horario;
+            funcion.Fecha = updatedFuncion.Fecha;
+            funcion.Hora = updatedFuncion.Hora;
 
             return NoContent();
         }
-
-        [HttpGet("pelicula/{peliculaId}")]
-        public ActionResult<IEnumerable<Funcion>> GetFuncionesPorPelicula(int peliculaId)
-        {
-            var funcionesPorPelicula = funciones.Where(f => f.PeliculaId == peliculaId).ToList();
-
-            if (!funcionesPorPelicula.Any())
-            {
-                return NotFound($"No se encontraron funciones para la película con ID {peliculaId}.");
-            }
-
-            return Ok(funcionesPorPelicula);
-        }
-
 
         [HttpDelete("{id}")]
         public IActionResult DeleteFuncion(int id)
@@ -87,28 +107,57 @@ namespace CineAPI.Controllers
 
         private static void InicializarDatos()
         {
-            // Inicializar datos de funciones
-            funciones.Add(new Funcion(1, 1, 1, DateTime.Today.AddHours(10)));
-            funciones.Add(new Funcion(2, 2, 1, DateTime.Today.AddHours(13)));
-            funciones.Add(new Funcion(3, 3, 1, DateTime.Today.AddHours(16)));
-            funciones.Add(new Funcion(4, 4, 1, DateTime.Today.AddHours(19)));
-            funciones.Add(new Funcion(5, 5, 1, DateTime.Today.AddHours(21)));
-            funciones.Add(new Funcion(6, 6, 1, DateTime.Today.AddHours(23)));
+            // Fecha base para las funciones
+            DateOnly fechaBase = DateOnly.FromDateTime(DateTime.Today);
 
-            funciones.Add(new Funcion(7, 1, 2, DateTime.Today.AddHours(11)));
-            funciones.Add(new Funcion(8, 2, 2, DateTime.Today.AddHours(14)));
-            funciones.Add(new Funcion(9, 3, 2, DateTime.Today.AddHours(17)));
-            funciones.Add(new Funcion(10, 4, 2, DateTime.Today.AddHours(20)));
-            funciones.Add(new Funcion(11, 5, 2, DateTime.Today.AddHours(22)));
-            funciones.Add(new Funcion(12, 6, 2, DateTime.Today.AddHours(24)));
+            // Funciones para la película 1
+            funciones.Add(new Funcion(1, 1, 1, fechaBase, new TimeOnly(10, 0))); // Hoy
+            funciones.Add(new Funcion(2, 1, 1, fechaBase, new TimeOnly(13, 0))); // Hoy
+            funciones.Add(new Funcion(3, 1, 2, fechaBase.AddDays(1), new TimeOnly(16, 0))); // Mañana
+            funciones.Add(new Funcion(4, 1, 2, fechaBase.AddDays(1), new TimeOnly(18, 0))); // Mañana
+            funciones.Add(new Funcion(5, 1, 3, fechaBase.AddDays(2), new TimeOnly(20, 0))); // Pasado mañana
+            funciones.Add(new Funcion(6, 1, 3, fechaBase.AddDays(2), new TimeOnly(22, 0))); // Pasado mañana
 
-            funciones.Add(new Funcion(13, 1, 3, DateTime.Today.AddHours(10)));
-            funciones.Add(new Funcion(14, 2, 3, DateTime.Today.AddHours(13)));
-            funciones.Add(new Funcion(15, 3, 3, DateTime.Today.AddHours(16)));
-            funciones.Add(new Funcion(16, 4, 3, DateTime.Today.AddHours(19)));
-            funciones.Add(new Funcion(17, 5, 3, DateTime.Today.AddHours(21)));
-            funciones.Add(new Funcion(18, 6, 3, DateTime.Today.AddHours(23)));
+            // Funciones para la película 2
+            funciones.Add(new Funcion(7, 2, 1, fechaBase, new TimeOnly(11, 0))); // Hoy
+            funciones.Add(new Funcion(8, 2, 1, fechaBase, new TimeOnly(14, 0))); // Hoy
+            funciones.Add(new Funcion(9, 2, 2, fechaBase.AddDays(1), new TimeOnly(17, 0))); // Mañana
+            funciones.Add(new Funcion(10, 2, 2, fechaBase.AddDays(1), new TimeOnly(19, 0))); // Mañana
+            funciones.Add(new Funcion(11, 2, 3, fechaBase.AddDays(2), new TimeOnly(21, 0))); // Pasado mañana
+            funciones.Add(new Funcion(12, 2, 3, fechaBase.AddDays(2), new TimeOnly(23, 0))); // Pasado mañana
 
+            // Funciones para la película 3
+            funciones.Add(new Funcion(13, 3, 1, fechaBase, new TimeOnly(12, 0))); // Hoy
+            funciones.Add(new Funcion(14, 3, 2, fechaBase, new TimeOnly(15, 0))); // Hoy
+            funciones.Add(new Funcion(15, 3, 2, fechaBase.AddDays(1), new TimeOnly(18, 0))); // Mañana
+            funciones.Add(new Funcion(16, 3, 3, fechaBase.AddDays(1), new TimeOnly(20, 0))); // Mañana
+            funciones.Add(new Funcion(17, 3, 3, fechaBase.AddDays(2), new TimeOnly(22, 0))); // Pasado mañana
+            funciones.Add(new Funcion(18, 3, 1, fechaBase.AddDays(2), new TimeOnly(23, 0))); // Pasado mañana
+
+            // Funciones para la película 4
+            funciones.Add(new Funcion(19, 4, 2, fechaBase, new TimeOnly(13, 0))); // Hoy
+            funciones.Add(new Funcion(20, 4, 2, fechaBase, new TimeOnly(16, 0))); // Hoy
+            funciones.Add(new Funcion(21, 4, 3, fechaBase.AddDays(1), new TimeOnly(19, 0))); // Mañana
+            funciones.Add(new Funcion(22, 4, 3, fechaBase.AddDays(1), new TimeOnly(21, 0))); // Mañana
+            funciones.Add(new Funcion(23, 4, 1, fechaBase.AddDays(2), new TimeOnly(22, 0))); // Pasado mañana
+            funciones.Add(new Funcion(24, 4, 1, fechaBase.AddDays(2), new TimeOnly(23, 30))); // Pasado mañana
+
+            // Funciones para la película 5
+            funciones.Add(new Funcion(25, 5, 1, fechaBase, new TimeOnly(14, 0))); // Hoy
+            funciones.Add(new Funcion(26, 5, 1, fechaBase, new TimeOnly(17, 0))); // Hoy
+            funciones.Add(new Funcion(27, 5, 2, fechaBase.AddDays(1), new TimeOnly(19, 0))); // Mañana
+            funciones.Add(new Funcion(28, 5, 2, fechaBase.AddDays(1), new TimeOnly(21, 0))); // Mañana
+            funciones.Add(new Funcion(29, 5, 3, fechaBase.AddDays(2), new TimeOnly(22, 0))); // Pasado mañana
+            funciones.Add(new Funcion(30, 5, 3, fechaBase.AddDays(2), new TimeOnly(23, 59))); // Pasado mañana
+
+            // Funciones para la película 6
+            funciones.Add(new Funcion(31, 6, 2, fechaBase, new TimeOnly(15, 0))); // Hoy
+            funciones.Add(new Funcion(32, 6, 2, fechaBase, new TimeOnly(18, 0))); // Hoy
+            funciones.Add(new Funcion(33, 6, 3, fechaBase.AddDays(1), new TimeOnly(20, 0))); // Mañana
+            funciones.Add(new Funcion(34, 6, 3, fechaBase.AddDays(1), new TimeOnly(22, 0))); // Mañana
+            funciones.Add(new Funcion(35, 6, 1, fechaBase.AddDays(2), new TimeOnly(23, 0))); // Pasado mañana
+            funciones.Add(new Funcion(36, 6, 1, fechaBase.AddDays(2), new TimeOnly(23, 59))); // Pasado mañana
         }
+
     }
 }
