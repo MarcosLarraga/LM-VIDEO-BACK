@@ -18,7 +18,7 @@ namespace CineAPI.Controllers
         // Método para inicializar los 60 asientos
         private static void InicializarAsientos()
         {
-            int numeroDeFunciones = 18; // Total de funciones
+            int numeroDeFunciones = 36; // Total de funciones
             int numeroAsientosPorFuncion = 64; // Total de asientos por función
             decimal precioBase = 6.00m; // Precio base de los asientos
 
