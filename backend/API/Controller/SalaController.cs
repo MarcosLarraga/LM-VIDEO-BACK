@@ -16,12 +16,6 @@ namespace CineAPI.Controllers
             InicializarDatos();
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<Sala>> GetSalas()
-        {
-            return Ok(salas);
-        }
-
         [HttpGet("{id}")]
         public ActionResult<Sala> GetSala(int id)
         {
@@ -31,37 +25,6 @@ namespace CineAPI.Controllers
                 return NotFound();
             }
             return Ok(sala);
-        }
-
-        [HttpPost]
-        public ActionResult<Sala> CreateSala(Sala sala)
-        {
-            salas.Add(sala);
-            return CreatedAtAction(nameof(GetSala), new { id = sala.Id }, sala);
-        }
-
-        [HttpPut("{id}")]
-        public IActionResult UpdateSala(int id, Sala updatedSala)
-        {
-            var sala = salas.FirstOrDefault(s => s.Id == id);
-            if (sala == null)
-            {
-                return NotFound();
-            }
-            sala.Nombre = updatedSala.Nombre;
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult DeleteSala(int id)
-        {
-            var sala = salas.FirstOrDefault(s => s.Id == id);
-            if (sala == null)
-            {
-                return NotFound();
-            }
-            salas.Remove(sala);
-            return NoContent();
         }
 
         private static void InicializarDatos()

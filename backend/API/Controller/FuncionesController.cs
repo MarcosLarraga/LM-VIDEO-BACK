@@ -48,62 +48,6 @@ namespace CineAPI.Controllers
             return Ok(funcionesPorPelicula);
         }
 
-        [HttpGet("pelicula/{peliculaId}/fecha/{fecha}")]
-        public ActionResult<IEnumerable<Funcion>> GetFuncionesPorPeliculaYFecha(int peliculaId, string fecha)
-        {
-            if (!DateOnly.TryParse(fecha, out DateOnly fechaParsed))
-            {
-                return BadRequest("El formato de la fecha es incorrecto.");
-            }
-
-            var funcionesPorFecha = funciones
-                .Where(f => f.PeliculaId == peliculaId && f.Fecha == fechaParsed)
-                .ToList();
-
-            if (!funcionesPorFecha.Any())
-            {
-                return NotFound($"No se encontraron funciones para la película con ID {peliculaId} en la fecha {fechaParsed.ToShortDateString()}.");
-            }
-
-            return Ok(funcionesPorFecha);
-        }
-
-        [HttpPost]
-        public ActionResult<Funcion> CreateFuncion(Funcion funcion)
-        {
-            funcion.Id = funciones.Any() ? funciones.Max(f => f.Id) + 1 : 1; // Asignar ID único
-            funciones.Add(funcion);
-            return CreatedAtAction(nameof(GetFuncion), new { id = funcion.Id }, funcion);
-        }
-
-        [HttpPut("{id}")]
-        public IActionResult UpdateFuncion(int id, Funcion updatedFuncion)
-        {
-            var funcion = funciones.FirstOrDefault(f => f.Id == id);
-            if (funcion == null)
-            {
-                return NotFound($"La función con ID {id} no fue encontrada.");
-            }
-
-            funcion.PeliculaId = updatedFuncion.PeliculaId;
-            funcion.SalaId = updatedFuncion.SalaId;
-            funcion.Fecha = updatedFuncion.Fecha;
-            funcion.Hora = updatedFuncion.Hora;
-
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult DeleteFuncion(int id)
-        {
-            var funcion = funciones.FirstOrDefault(f => f.Id == id);
-            if (funcion == null)
-            {
-                return NotFound($"La función con ID {id} no fue encontrada.");
-            }
-            funciones.Remove(funcion);
-            return NoContent();
-        }
 
         private static void InicializarDatos()
         {

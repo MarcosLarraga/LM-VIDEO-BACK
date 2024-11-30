@@ -25,46 +25,6 @@ namespace CineAPI.Controllers
             return pelicula != null ? Ok(pelicula) : NotFound($"No se encontró la película con ID {id}");
         }
 
-        // POST: api/pelicula
-        [HttpPost]
-        public ActionResult<Pelicula> CreatePelicula(Pelicula pelicula)
-        {
-            if (peliculas.Any(p => p.Id == pelicula.Id))
-            {
-                return Conflict($"Ya existe una película con el ID {pelicula.Id}");
-            }
-            peliculas.Add(pelicula);
-            return CreatedAtAction(nameof(GetPelicula), new { id = pelicula.Id }, pelicula);
-        }
-
-        // PUT: api/pelicula/{id}
-        [HttpPut("{id}")]
-        public IActionResult UpdatePelicula(int id, Pelicula updatedPelicula)
-        {
-            var pelicula = peliculas.FirstOrDefault(p => p.Id == id);
-            if (pelicula == null)
-            {
-                return NotFound($"No se encontró la película con ID {id}");
-            }
-            pelicula.Titulo = updatedPelicula.Titulo;
-            pelicula.Descripcion = updatedPelicula.Descripcion;
-            pelicula.Duracion = updatedPelicula.Duracion;
-            pelicula.FotoUrl = updatedPelicula.FotoUrl;
-            return NoContent();
-        }
-
-        // DELETE: api/pelicula/{id}
-        [HttpDelete("{id}")]
-        public IActionResult DeletePelicula(int id)
-        {
-            var pelicula = peliculas.FirstOrDefault(p => p.Id == id);
-            if (pelicula == null)
-            {
-                return NotFound($"No se encontró la película con ID {id}");
-            }
-            peliculas.Remove(pelicula);
-            return NoContent();
-        }
 
         // Método para inicializar datos de ejemplo
         public static void InicializarDatos()

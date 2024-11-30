@@ -22,14 +22,13 @@ namespace CineAPI.Controllers
         {
             int numeroDeFunciones = 36; // Total de funciones
             int numeroAsientosPorFuncion = 64; // Total de asientos por función
-            decimal precioBase = 6.00m; // Precio base de los asientos
 
             for (int funcionId = 1; funcionId <= numeroDeFunciones; funcionId++)
             {
                 for (int i = 1; i <= numeroAsientosPorFuncion; i++)
                 {
                     // Crear y añadir un asiento único para cada función
-                    Asientos.Add(new Asiento(Asientos.Count + 1, i, true, precioBase, funcionId));
+                    Asientos.Add(new Asiento(Asientos.Count + 1, i, true, funcionId));
                 }
             }
         }
@@ -44,7 +43,6 @@ namespace CineAPI.Controllers
                 {
                     a.Numero,
                     a.Disponible,
-                    Precio = $"{a.Precio} €" // Formatear precio con símbolo de euros
                 })
                 .ToList();
 
@@ -103,7 +101,6 @@ namespace CineAPI.Controllers
             {
                 asiento.Numero,
                 asiento.Disponible,
-                asiento.Precio,
                 asiento.FuncionId
             });
         }

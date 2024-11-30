@@ -8,13 +8,9 @@ namespace CineAPI.Controllers
     [ApiController]
     public class PagosController : ControllerBase
     {
-        // Lista estática para almacenar pagos en memoria
         public static List<Pago> pagos = new List<Pago>();
-
-        // Precio fijo de cada asiento
         private const decimal precioAsiento = 6.00m;
 
-        // POST: api/pagos
         [HttpPost]
         public IActionResult RegistrarPago([FromBody] Pago nuevoPago)
         {
@@ -47,20 +43,17 @@ namespace CineAPI.Controllers
             // Calcular el precio total basado en el número de asientos seleccionados
             decimal precioTotal = nuevoPago.AsientosSeleccionados.Count * precioAsiento;
 
-            // Asignar un ID único al pago
             nuevoPago.Id = pagos.Any() ? pagos.Max(p => p.Id) + 1 : 1;
 
-            // Agregar el pago a la lista
             pagos.Add(nuevoPago);
 
-            // Retornar el pago registrado con el precio total calculado
             return CreatedAtAction(nameof(ObtenerPago), new { id = nuevoPago.Id }, new
             {
                 nuevoPago.Id,
                 nuevoPago.FuncionId,
                 nuevoPago.PeliculaId,
                 AsientosSeleccionados = nuevoPago.AsientosSeleccionados,
-                PrecioTotal = precioTotal, // Añadir precio total
+                PrecioTotal = precioTotal, 
                 Cliente = new
                 {
                     nuevoPago.Nombre,
@@ -88,14 +81,13 @@ namespace CineAPI.Controllers
             // Calcular el precio total basado en los asientos seleccionados
             decimal precioTotal = pago.AsientosSeleccionados.Count * precioAsiento;
 
-            // Retornar los detalles del pago
             return Ok(new
             {
                 pago.Id,
                 pago.FuncionId,
                 pago.PeliculaId,
                 AsientosSeleccionados = pago.AsientosSeleccionados,
-                PrecioTotal = precioTotal, // Añadir precio total
+                PrecioTotal = precioTotal, 
                 Cliente = new
                 {
                     pago.Nombre,
