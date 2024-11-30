@@ -8,10 +8,7 @@ namespace CineAPI.Controllers
     [ApiController]
     public class AsientoController : ControllerBase
     {
-        // Lista de asientos accesible estáticamente
         public static List<Asiento> Asientos = new List<Asiento>();
-
-        // Constructor estático para inicializar asientos
         static AsientoController()
         {
             InicializarAsientos();
@@ -27,7 +24,6 @@ namespace CineAPI.Controllers
             {
                 for (int i = 1; i <= numeroAsientosPorFuncion; i++)
                 {
-                    // Crear y añadir un asiento único para cada función
                     Asientos.Add(new Asiento(Asientos.Count + 1, i, true, funcionId));
                 }
             }

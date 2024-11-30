@@ -10,14 +10,14 @@ namespace CineAPI.Controllers
     {
         private static List<Pelicula> peliculas = new List<Pelicula>();
 
-        // GET: api/pelicula
+
         [HttpGet]
         public ActionResult<IEnumerable<Pelicula>> GetPeliculas()
         {
             return Ok(peliculas);
         }
 
-        // GET: api/pelicula/{id}
+
         [HttpGet("{id}")]
         public ActionResult<Pelicula> GetPelicula(int id)
         {
@@ -25,8 +25,6 @@ namespace CineAPI.Controllers
             return pelicula != null ? Ok(pelicula) : NotFound($"No se encontró la película con ID {id}");
         }
 
-
-        // Método para inicializar datos de ejemplo
         public static void InicializarDatos()
         {
             peliculas.Add(new Pelicula(1, "Venom: El Último Baile", "Eddie y Venom están prófugos. Perseguidos por sus dos mundos y con la red cerrándose sobre ellos, el dúo se ve obligado a tomar una decisión devastadora.", "1 hora 49 minutos", "https://image.tmdb.org/t/p/original/b0obWWCLRVRqRzlSK1LSGtADkLM.jpg"));
